@@ -43,10 +43,13 @@ StarWars = (function() {
     
     // Audio to play the opening crawl
     this.audio = this.el.find('audio').get(0);
+  
+    // interactive element to start the intro sequence
+    this.start = $('.start');
     
     // interactive element to restart the intro sequence
-    this.start = $('.restart');
-
+    this.restart = $('.restart');
+    
     // interactive element to skip the intro sequence
     this.skip = $('.skip');
     
@@ -71,6 +74,11 @@ StarWars = (function() {
       this.go();
     }, this));
 
+        // Start the animation on click
+    this.restart.bind('click', $.proxy(function() {
+      this.go();
+    }, this));
+
     // Stop the animation on click
     this.skip.bind('click', $.proxy(function() {
       this.reset();
@@ -78,6 +86,7 @@ StarWars = (function() {
 
     StarWars.prototype.go = function () {
       this.start.hide();
+      this.restart.hide();
       this.skip.show();
       this.photobox.fadeOut(duration=2);
       this.audio.play()
@@ -96,7 +105,7 @@ StarWars = (function() {
   StarWars.prototype.reset = function() {
     this.photobox.show();
     this.skip.hide();
-    this.start.show();
+    this.restart.show();
     this.cloned = this.animation.clone(true);
     this.animation.remove();
     this.animation = this.cloned;
