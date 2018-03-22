@@ -43,15 +43,15 @@ StarWars = (function() {
     
     // Audio to play the opening crawl
     this.audio = this.el.find('audio').get(0);
-  
-    // interactive element to start the intro sequence
-    this.start = $('.start');
     
-    // interactive element to restart the intro sequence
-    this.restart = $('.restart');
-    
-    // interactive element to skip the intro sequence
+    // interactive control element to start the intro sequence
+    this.startcontrol = $('.start');
+
+    // interactive control element to skip the intro sequence
     this.skip = $('.skip');
+
+    // interactive control element to restart the intro sequence
+    this.restart = $('.restart');
     
     // The animation wrapper
     this.animation = this.el.find('.animation');
@@ -61,56 +61,72 @@ StarWars = (function() {
 
     // The link to the photo album
     this.photos = $('.photos');
-
     this.photos.bind('click', $.proxy(function(){
       window.location.href='https://photos.app.goo.gl/ooPwLr856HWFB1oT2'
     }));
     
     // Remove animation and shows the start screen
-    //this.reset();
+//    this.getready();
 
     // Start the animation on click
-    this.start.bind('click', $.proxy(function() {
+    this.startcontrol.bind('click', $.proxy(function() {
       this.go();
     }, this));
 
-        // Start the animation on click
+    // Start the animation on click
     this.restart.bind('click', $.proxy(function() {
       this.go();
     }, this));
-
+    
     // Stop the animation on click
     this.skip.bind('click', $.proxy(function() {
       this.reset();
     }, this))
 
+
     StarWars.prototype.go = function () {
-      this.start.hide();
+      this.startcontrol.hide();
       this.restart.hide();
+      this.photobox.hide();
       this.skip.show();
-      this.photobox.fadeOut(duration=2);
       this.audio.play()
       this.el.append(this.animation);
     }
   
-    // At the end of the audio track, reset the animation and show the start screen
+    // At the end of the audio track, reset the animation and show the photobox
     $(this.audio).bind('ended', $.proxy(function() {
       this.reset();
     }, this));
   }
-  
+
+StarWars.prototype.getready = function() {
+  console.log("getready fired");
+  this.prep();
+  this.startcontrol.show();
+  this.photobox.hide();
+  this.skip.hide();
+  this.restart.hide();
+}
+
+StarWars.prototype.prep = function() {
+  console.log("prep fired");
+  this.cloned = this.animation.clone(true);
+  this.animation.remove();
+  this.animation = this.cloned;
+  this.audio.pause();
+  this.audio.currentTime = 0;
+}
+
   /*
-   * Resets the animation and shows the start screen.
+   * Resets the animation and shows the photobox.
    */
   StarWars.prototype.reset = function() {
-    this.photobox.show();
+    console.log("reset fired")
+    this.prep();
+    this.startcontrol.hide();
     this.skip.hide();
     this.restart.show();
-    this.cloned = this.animation.clone(true);
-    this.animation.remove();
-    this.animation = this.cloned;
-    this.audio.pause();
-    this.audio.currentTime = 0;
+    this.photobox.show();
   };
 
   return StarWars;
@@ -120,4 +136,4 @@ MySW = new StarWars({
   el : '.starwars'
 });
 
-$(document).ready(function() {MySW.go();})
+$(document).ready(function() {MySW.getready();})
