@@ -15,6 +15,7 @@ body {
   color: #ff6;
   cursor: pointer;
   font-size: 150%;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .action {
